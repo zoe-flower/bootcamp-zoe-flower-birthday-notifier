@@ -1,0 +1,45 @@
+alerting:
+    alerts:
+      - name: service_restart
+        metric: increase(kube_pod_container_status_restarts_total{pod=~"bootcamp-zoe-flower-birthday-notifier.*"}[10m])
+            > 0
+        period: 2m
+        summary: bootcamp-zoe-flower-birthday-notifier is restarting
+        description: bootcamp-zoe-flower-birthday-notifier is restarting
+        severity: critical
+      - name: goroutines_elevated
+        metric: max(go_goroutines{kubernetes_namespace="flyt", app="bootcamp-zoe-flower-birthday-notifier"}
+            > 500) by (app)
+        period: 2m
+        summary: bootcamp-zoe-flower-birthday-notifier is running with an elevated
+            number of goroutines indicative of a leak
+        description: bootcamp-zoe-flower-birthday-notifier is running with an elevated
+            number of goroutines indicative of a leak
+        severity: high
+      - name: consumer_lag_bootcamp-user-created
+        metric: sum(aws_sqs_approximate_number_of_messages_visible_sum{queue_name="event-bus-28f292eefa13b4b15a8142abd6b379ff93e440305d0df91e1240825a754d11bd"})
+            > 50
+        period: 2m
+        summary: bootcamp-zoe-flower-birthday-notifier is unable to process some bootcamp-user-created
+            events in a reasonable amount of time
+        description: bootcamp-zoe-flower-birthday-notifier is seeing a spike in the
+            time required to process some bootcamp-user-created events
+        severity: high
+      - name: deadletters_bootcamp-user-created
+        metric: sum(delta(aws_sqs_approximate_number_of_messages_visible_sum{queue_name="event-bus-dlq-28f292eefa13b4b15a8142abd6b379ff93e440305d0df91e1240825a754d11bd"}[10m]))
+            > 0
+        period: 2m
+        summary: bootcamp-zoe-flower-birthday-notifier can't process some "bootcamp-user-created"
+            events
+        description: bootcamp-zoe-flower-birthday-notifier can't process some "bootcamp-user-created"
+            events
+        severity: critical
+      - name: panics_bootcamp-user-created
+        metric: sum(increase(eventbus_events_consumer_panics_total{app="bootcamp-zoe-flower-birthday-notifier",topic="bootcamp-user-created"}[10m]))
+            > 0
+        period: 2m
+        summary: bootcamp-zoe-flower-birthday-notifier had a panic handling "bootcamp-user-created"
+            events
+        description: bootcamp-zoe-flower-birthday-notifier had a panic handling "bootcamp-user-created"
+            events
+        severity: critical

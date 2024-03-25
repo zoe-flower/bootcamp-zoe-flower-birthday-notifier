@@ -1,0 +1,51 @@
+releases:
+  - name: bootcamp-zoe-flower-birthday-notifier
+    namespace: flyt
+    chart: flyt/service-tool
+    version: 0.15.3
+    set:
+      - name: nameOverride
+        value: bootcamp-zoe-flower-birthday-notifier
+      - name: app.name
+        value: bootcamp-zoe-flower-birthday-notifier
+      - name: app.team
+        value: jetc-tooling
+      - name: app.flow
+      - name: app.tier
+        value: Undefined
+      - name: app.in_prod
+        value: "false"
+      - name: image.repository
+        value: 746238309645.dkr.ecr.eu-west-1.amazonaws.com/bootcamp-zoe-flower-birthday-notifier
+      - name: http.enabled
+        value: "false"
+    values:
+      - '{{ requiredEnv "PLATFORM_ENVIRONMENT" }}/values.yaml'
+  - name: bootcamp-zoe-flower-birthday-notifier-monitoring
+    namespace: flyt
+    chart: flyt/monitoring
+    version: 0.2.3
+    set:
+      - name: nameOverride
+        value: bootcamp-zoe-flower-birthday-notifier-monitoring
+      - name: app.name
+        value: bootcamp-zoe-flower-birthday-notifier
+      - name: app.environment
+        value: '{{ requiredEnv "PLATFORM_ENVIRONMENT" }}'
+      - name: alerting.team
+        value: jetc-tooling
+      - name: alerting.enabled
+        value: "true"
+    values:
+      - monitoring.yaml
+  - name: bootcamp-zoe-flower-birthday-notifier-dashboard
+    namespace: flyt
+    chart: flyt/dashboards
+    version: 0.2.0
+    set:
+      - name: nameOverride
+        value: bootcamp-zoe-flower-birthday-notifier-dashboard
+      - name: targetDirectory
+        value: /services-default
+    values:
+      - '{{ requiredEnv "PLATFORM_ENVIRONMENT" }}/default-dashboard.yaml'
