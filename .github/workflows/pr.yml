@@ -90,6 +90,34 @@ jobs:
         cat comment.txt
         /dev-tool ci pr-comment "Service Validation" --file=comment.txt --owner $GITHUB_REPOSITORY_OWNER --repo $REPOSITORY --branch $GITHUB_BRANCH --token $GITHUB_TOKEN
         exit $status
+  go-kit-validate-openapi:
+    needs: login-to-amazon-ecr
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ needs.login-to-amazon-ecr.outputs.registry }}/go-kit:v4.117.0
+      credentials:
+        username: ${{ needs.login-to-amazon-ecr.outputs.docker_username }}
+        password: ${{ needs.login-to-amazon-ecr.outputs.docker_password }}
+    env:
+      REPOSITORY: ${{ github.event.repository.name }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+      GITHUB_BRANCH: ${{ github.head_ref }}
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - name: Validate OpenAPI
+      run: |-
+        set +e
+        /dev-tool validate openapi > comment.txt
+        status=$?
+        set -eo pipefail
+        if $status == 0; then
+            /dev-tool ci pr-comment "OpenAPI Validation" "No issues found :)" --owner $GITHUB_REPOSITORY_OWNER --repo $REPOSITORY --branch $GITHUB_BRANCH --token $GITHUB_TOKEN
+            exit 0
+        fi
+        cat comment.txt
+        /dev-tool ci pr-comment "OpenAPI Validation" --file=comment.txt --owner $GITHUB_REPOSITORY_OWNER --repo $REPOSITORY --branch $GITHUB_BRANCH --token $GITHUB_TOKEN
+        exit $status
   service-compiles:
     needs: login-to-amazon-ecr
     runs-on: ubuntu-latest
@@ -106,6 +134,60 @@ jobs:
         git config --global --add safe.directory '*'
         
         /dev-tool run --compile-only
+  integration-tests:
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: 'on'
+      GOFLAGS: "-mod=vendor"
+      TEST_SERVICE_ADDR: http://localhost:8080
+      CI: 'true'
+      GOOS: linux
+      CGO_ENABLED: '0'
+      REPOSITORY: ${{ github.event.repository.name }}
+      OPSGENIE_API_KEY: ${{ secrets.STAGING_OPSGENIE_API_KEY }}
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - name: Generate a token
+      id: generate_token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ secrets.ASSETS_DOWNLOADER_APP_ID }}
+        private-key: ${{ secrets.ASSETS_DOWNLOADER_PRIVATE_KEY }}
+        repositories: go-kit
+    - name: Install latest dev-tool
+      env:
+        GITHUB_ASSETS_DOWNLOADER_TOKEN: ${{ steps.generate_token.outputs.token }}
+      run: |-
+        ASSET_ID=$(curl --silent https://api.github.com/repos/flypay/go-kit/releases/latest --header "authorization: Bearer $GITHUB_ASSETS_DOWNLOADER_TOKEN" | jq -r ".assets | map(select(.name == \"dev-tool-linux-amd64.tar.gz\"))[0].id")
+        if [[ "$ASSET_ID" == "null" ]]; then echo "Unable to get latest dev-tool release"; exit 1; fi
+        curl --silent https://api.github.com/repos/flypay/go-kit/releases/assets/$ASSET_ID --header "authorization: Bearer $GITHUB_ASSETS_DOWNLOADER_TOKEN" -H "Accept: application/octet-stream" -L -O -J
+        tar -xvf dev-tool-linux-amd64.tar.gz
+    - uses: actions/setup-go@v4.1.0
+      with:
+        cache: false
+        go-version: '1.22'
+    - name: restore_cache
+      uses: actions/cache/restore@v3.3.2
+      with:
+        key: v1-golang-build-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('go.sum') }}
+        path: "~/.cache/go-build"
+    - name: Build Integration Image
+      run: go test -tags=integration -c -o integration github.com/flypay/$REPOSITORY/cmd/app
+    - name: Start docker resources
+      run: "./dev-tool docker up"
+    - name: Start Service
+      # Should run in the background (also need to redirect all terminal output as this causes the process to get detached)
+      run: "./dev-tool run &>/dev/null &"
+    - name: save_cache
+      uses: actions/cache/save@v3.3.2
+      with:
+        key: v1-golang-build-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('go.sum') }}
+        path: "~/.cache/go-build"
+    - name: Wait for service to start
+      run: until $(curl --output /dev/null --silent --fail $TEST_SERVICE_ADDR/ping); do sleep 5; done
+      timeout-minutes: 2
+    - name: Run Integration Tests
+      run: if [ -f ./integration ]; then ./integration; fi
   monorepo-tests:
     uses: ./.github/workflows/helper-monorepo-tests.yml
     secrets: inherit

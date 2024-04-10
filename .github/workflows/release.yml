@@ -94,10 +94,10 @@ jobs:
     with:
       gha_deploy_role: ${{ vars.STAGING_GHA_DEPLOY_ROLE }}
       team: "jetc-tooling"
-      projections: '{"default":{"name":"default","attributes":[],"indexes":[]}}'
-      composite_projections: '{}'
-      datastore_resource_names: '["default"]'
-      datastore_composite_resource_names: '{}'
+      projections: '{}'
+      composite_projections: '{"user-birthdays-composite":{"name":"user-birthdays-composite","attributes":[],"indexes":[]}}'
+      datastore_resource_names: '[]'
+      datastore_composite_resource_names: '{"user-birthdays-composite":"user-birthdays-composite"}'
       object_store_resource_names: '["large-messages"]'
       object_store_expire_days: '[14]'
       assets_resource_names: '[]'
@@ -107,8 +107,8 @@ jobs:
       consume_event_receive_count: '{"bootcamp-user-created":5}'
       consume_event_hashed: true
       gateway_http_type: 'api'
-      gateway_rate_limit_second: '0'
-      gateway_allowed_payload_size: '0'
+      gateway_rate_limit_second: '5'
+      gateway_allowed_payload_size: '1'
     secrets:
       ASSETS_ACM_ARN: ${{ secrets.STAGING_ASSETS_ACM_ARN }}
       ASSETS_ZONE_ID: ${{ secrets.STAGING_ASSETS_ZONE_ID }}
@@ -139,10 +139,10 @@ jobs:
     with:
       gha_deploy_role: ${{ vars.PRODUCTION_GHA_DEPLOY_ROLE }}
       team: "jetc-tooling"
-      projections: '{"default":{"name":"default","attributes":[],"indexes":[]}}'
-      composite_projections: '{}'
-      datastore_resource_names: '["default"]'
-      datastore_composite_resource_names: '{}'
+      projections: '{}'
+      composite_projections: '{"user-birthdays-composite":{"name":"user-birthdays-composite","attributes":[],"indexes":[]}}'
+      datastore_resource_names: '[]'
+      datastore_composite_resource_names: '{"user-birthdays-composite":"user-birthdays-composite"}'
       object_store_resource_names: '["large-messages"]'
       object_store_expire_days: '[14]'
       assets_resource_names: '[]'
@@ -152,8 +152,8 @@ jobs:
       consume_event_receive_count: '{"bootcamp-user-created":5}'
       consume_event_hashed: true
       gateway_http_type: 'api'
-      gateway_rate_limit_second: '0'
-      gateway_allowed_payload_size: '0'
+      gateway_rate_limit_second: '5'
+      gateway_allowed_payload_size: '1'
     secrets:
       ASSETS_ACM_ARN: ${{ secrets.PRODUCTION_ASSETS_ACM_ARN }}
       ASSETS_ZONE_ID: ${{ secrets.PRODUCTION_ASSETS_ZONE_ID }}

@@ -16,6 +16,25 @@ alerting:
         description: bootcamp-zoe-flower-birthday-notifier is running with an elevated
             number of goroutines indicative of a leak
         severity: high
+      - name: http_errors
+        metric: (sum(rate(kong_http_status{service=~"flyt.bootcamp-zoe-flower-birthday-notifier.(http|0)|bootcamp-zoe-flower-birthday-notifier",
+            code=~"5.*|499"}[10m]) or vector(0)) / sum(rate(kong_http_status{service=~"flyt.bootcamp-zoe-flower-birthday-notifier.(http|0)|bootcamp-zoe-flower-birthday-notifier"}[10m])))
+            * 100 > 1
+        period: 2m
+        summary: bootcamp-zoe-flower-birthday-notifier is sending more than 1% 5XX
+            status code responses
+        description: bootcamp-zoe-flower-birthday-notifier is sending more than 1%
+            5XX status code responses
+        severity: critical
+      - name: http_panics
+        metric: sum(increase(http_requests_panic{app="bootcamp-zoe-flower-birthday-notifier"}[10m]))
+            > 0
+        period: 2m
+        summary: bootcamp-zoe-flower-birthday-notifier has panics occuring in the
+            HTTP server
+        description: bootcamp-zoe-flower-birthday-notifier has panics occuring in
+            the HTTP server
+        severity: critical
       - name: consumer_lag_bootcamp-user-created
         metric: sum(aws_sqs_approximate_number_of_messages_visible_sum{queue_name="event-bus-28f292eefa13b4b15a8142abd6b379ff93e440305d0df91e1240825a754d11bd"})
             > 50

@@ -1,0 +1,55 @@
+openapi: 3.0.0
+info:
+  description: 'bootcamp-zoe-flower-birthday-notifier'
+  title: 'bootcamp-zoe-flower-birthday-notifier'
+  version: '0.0.1'
+servers:
+  - url: https://bootcamp-zoe-flower-birthday-notifier.flyt-platform.com
+    description: Production environment
+  - url: https://bootcamp-zoe-flower-birthday-notifier.flyt-staging.com
+    description: Staging environment
+  - url: https://bootcamp-zoe-flower-birthday-notifier-{namespace}.flyt-dev.com
+    description: Development environment
+    variables:
+      namespace:
+        default: username
+        description: The namespace of the development service, usually your username.
+paths:
+  /birthday:
+    get:
+      summary: Get users with birthdays today
+      description: Retrieves users from the database whose birthday is today
+      # matches the handler name
+      operationId: GetUsersWithBirthdayToday
+      parameters:
+        - name: date
+          in: query
+          description: date to check matching birthdays
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BirthdayRecord'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Flyt-Api-Key
+  schemas:
+    BirthdayRecord:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+security:
+  - ApiKeyAuth: []

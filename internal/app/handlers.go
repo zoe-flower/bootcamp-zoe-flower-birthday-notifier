@@ -9,23 +9,30 @@ import (
 	"github.com/flypay/go-kit/v4/pkg/projections"
 )
 
+// eventHandler is defined to have a CompositeReadWriter db. This allows the programme
+// to search to data with data that is not the identifier.
 type eventHandler struct {
-	db projections.ReadWriter
+	db projections.CompositeReadWriter
 }
 
-type UserCreatedProjection struct {
-	Identifier string // primary key
-	Dob        string
+// BirthdayRecordProjection maps the structure of the data in the database
+// used to add data to the db.
+type BirthdayRecordProjection struct {
+	Identifier string // Dob
+	Range      string // Name
 }
 
-func (e eventHandler) xxx(ctx context.Context, event any, headers ...eventbus.Header) error {
+// createUser is an eventHandler. It recieves the UserCreated event. Applies it to uc object.
+// Maps the object to the matching projection. Writes the data in the projection to the db.
+// New user data is added to the db.
+func (e eventHandler) createUser(ctx context.Context, event any, headers ...eventbus.Header) error {
 	logger := log.WithContext(ctx)
 	uc := event.(*bootcamp.UserCreated)
-	up := UserCreatedProjection{
-		Identifier: uc.Id,
-		Dob:        uc.DateOfBirth,
+	up := BirthdayRecordProjection{
+		Identifier: uc.DateOfBirth,
+		Range:      uc.Id,
 	}
-	logger.Debugf("xxx recieved %v", event)
+	logger.Debugf("createUser recieved %v", up)
 	err := e.db.Write(ctx, up, nil)
 	if err != nil {
 		return err

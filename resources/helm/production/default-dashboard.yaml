@@ -3049,7 +3049,7 @@ dashboardJson: |
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 82
+                "y": 103
              },
              "id": 40,
              "panels": [
@@ -3066,7 +3066,7 @@ dashboardJson: |
                       "h": 7,
                       "w": 8,
                       "x": 0,
-                      "y": 82
+                      "y": 104
                    },
                    "id": 41,
                    "legend": {
@@ -3100,7 +3100,7 @@ dashboardJson: |
                          "alias": "Read - {{TableName}}",
                          "datasource": "CloudWatch",
                          "dimensions": {
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "ConsumedReadCapacityUnits",
@@ -3116,7 +3116,7 @@ dashboardJson: |
                          "alias": "Write - {{TableName}}",
                          "datasource": "CloudWatch",
                          "dimensions": {
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "ConsumedWriteCapacityUnits",
@@ -3178,7 +3178,7 @@ dashboardJson: |
                       "h": 7,
                       "w": 8,
                       "x": 8,
-                      "y": 82
+                      "y": 104
                    },
                    "id": 42,
                    "legend": {
@@ -3213,7 +3213,7 @@ dashboardJson: |
                          "datasource": "CloudWatch",
                          "dimensions": {
                             "Operation": "GetItem",
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "SuccessfulRequestLatency",
@@ -3230,7 +3230,7 @@ dashboardJson: |
                          "datasource": "CloudWatch",
                          "dimensions": {
                             "Operation": "PutItem",
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "SuccessfulRequestLatency",
@@ -3291,7 +3291,7 @@ dashboardJson: |
                       "h": 7,
                       "w": 8,
                       "x": 16,
-                      "y": 82
+                      "y": 104
                    },
                    "id": 43,
                    "legend": {
@@ -3324,7 +3324,7 @@ dashboardJson: |
                       {
                          "datasource": "CloudWatch",
                          "dimensions": {
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "TimeToLiveDeletedItemCount",
@@ -3386,7 +3386,7 @@ dashboardJson: |
                       "h": 7,
                       "w": 8,
                       "x": 0,
-                      "y": 89
+                      "y": 111
                    },
                    "id": 44,
                    "legend": {
@@ -3420,7 +3420,7 @@ dashboardJson: |
                          "alias": "Read - {{TableName}}",
                          "datasource": "CloudWatch",
                          "dimensions": {
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "ReadThrottleEvents",
@@ -3436,7 +3436,7 @@ dashboardJson: |
                          "alias": "Write - {{TableName}}",
                          "datasource": "CloudWatch",
                          "dimensions": {
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "WriteThrottleEvents",
@@ -3498,7 +3498,7 @@ dashboardJson: |
                       "h": 7,
                       "w": 8,
                       "x": 8,
-                      "y": 89
+                      "y": 111
                    },
                    "id": 45,
                    "legend": {
@@ -3533,7 +3533,7 @@ dashboardJson: |
                          "datasource": "CloudWatch",
                          "dimensions": {
                             "Operation": "PutItem",
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "SystemErrors",
@@ -3550,7 +3550,7 @@ dashboardJson: |
                          "datasource": "CloudWatch",
                          "dimensions": {
                             "Operation": "DeleteItem",
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "SystemErrors",
@@ -3567,7 +3567,7 @@ dashboardJson: |
                          "datasource": "CloudWatch",
                          "dimensions": {
                             "Operation": "UpdateItem",
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "SystemErrors",
@@ -3584,7 +3584,7 @@ dashboardJson: |
                          "datasource": "CloudWatch",
                          "dimensions": {
                             "Operation": "GetItem",
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "SystemErrors",
@@ -3646,7 +3646,7 @@ dashboardJson: |
                       "h": 7,
                       "w": 8,
                       "x": 16,
-                      "y": 89
+                      "y": 111
                    },
                    "id": 46,
                    "legend": {
@@ -3680,7 +3680,7 @@ dashboardJson: |
                          "alias": "{{TableName}}",
                          "datasource": "CloudWatch",
                          "dimensions": {
-                            "TableName": "$service-$databaseResources"
+                            "TableName": "$service-composite-$databaseCompositeResources"
                          },
                          "highResolution": false,
                          "metricName": "ConditionalCheckFailedRequests",
@@ -3742,7 +3742,7 @@ dashboardJson: |
                       "h": 7,
                       "w": 8,
                       "x": 0,
-                      "y": 96
+                      "y": 118
                    },
                    "id": 47,
                    "legend": {
@@ -3856,7 +3856,7 @@ dashboardJson: |
                       "h": 7,
                       "w": 8,
                       "x": 8,
-                      "y": 96
+                      "y": 118
                    },
                    "id": 48,
                    "legend": {
@@ -3958,11 +3958,11 @@ dashboardJson: |
                    ]
                 }
              ],
-             "repeat": "databaseResources",
+             "repeat": "databaseCompositeResources",
              "repeatIteration": null,
              "repeatRowId": null,
              "showTitle": true,
-             "title": "Resource - Database - DynamoDB - $service-$databaseResources",
+             "title": "Resource - Database Composite - DynamoDB - $service-$databaseCompositeResources",
              "titleSize": "h6",
              "type": "row"
           }
@@ -4017,11 +4017,11 @@ dashboardJson: |
                    },
                    {
                       "selected": false,
-                      "text": "default",
-                      "value": "default"
+                      "text": "",
+                      "value": ""
                    }
                 ],
-                "query": "default",
+                "query": "",
                 "refresh": 0,
                 "type": "custom"
              },
@@ -4047,11 +4047,11 @@ dashboardJson: |
                    },
                    {
                       "selected": false,
-                      "text": "",
-                      "value": ""
+                      "text": "user-birthdays-composite",
+                      "value": "user-birthdays-composite"
                    }
                 ],
-                "query": "",
+                "query": "user-birthdays-composite",
                 "refresh": 0,
                 "type": "custom"
              },

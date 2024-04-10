@@ -36,7 +36,7 @@ func main() {
 
 	opts := []runtime.Option{
 		runtime.WithFromENV(),
-		runtime.WithShouldRunProducer(ConnectorDefinition.Identifier != ""),
+		runtime.WithShouldRunProducer(true),
 	}
 
 	cfg, err := runtime.ResolveConfigAndSetDefault(opts...)
@@ -93,9 +93,12 @@ func main() {
 
 	if err := service.RunService(
 
-		runner.NewDynamoStorage("default"),
+		runner.NewDynamoCompositeStorage("user-birthdays-composite"),
 
+		runner.Echo,
 		runner.Consumer,
+
+		runner.Producer,
 	); err != nil {
 		log.Fatalf("Failed to init service: %+v", err)
 	}
@@ -108,6 +111,13 @@ func main() {
 			produceEvent(runner.Producer, cfg.ServiceName)
 		}
 	})
+
+	if cfg.ShouldRunHTTP {
+		safe.Go(func() {
+			log.Infof("Starting external http server on http://localhost:%s", cfg.HTTPPort)
+			log.Error(runner.Echo.Start(":" + cfg.HTTPPort))
+		})
+	}
 
 	app.GracefullyShutdown(privhttpsrv)
 	app.Run()
