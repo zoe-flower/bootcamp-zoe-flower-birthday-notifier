@@ -1,36 +1,33 @@
-package main
+package service
 
-// import (
-// 	"testing"
+import (
+	"context"
+	"testing"
 
-// 	"github.com/flypay/bootcamp-zoe-flower-birthday-notifier/internal/app/service"
-// )
+	"github.com/flypay/go-kit/v4/pkg/projections"
+)
 
-// var (
-// 	a = 1
-// 	b = 2
-// 	c = 3
-// 	d = 4
-// )
+var testcases = []struct {
+	name    string
+	context context.Context
+	event   any
+}{
+	{"Writes data to db", context.Background(), 3},
+	{"Maps event data to Projection", context.Background(), 4},
+	{"third", context.Background(), 6},
+}
 
-// var testcases = []struct {
-// 	name     string
-// 	expected int
-// 	ip       int
-// }{
-// 	{"first", 2, 3},
-// 	{"second", 3, 4},
-// 	{"third", 5, 6},
-// }
-
-// func TestCreateUser(t *testing.T) {
-// 	for _, tc := range testcases {
-// 		t.Run(tc.name, func(t *testing.T) {
-// 			got := service.RunService(a, b, c, tc.ip)
-// 			expected := tc.expected
-// 			if got != expected {
-// 				t.Errorf("expected %v, got %v", expected, got)
-// 			}
-// 		})
-// 	}
-// }
+func TestCreateUser(t *testing.T) {
+	for _, tc := range testcases {
+		t.Run(tc.name, func(t *testing.T) {
+			a := &eventHandler{
+				db: &projections.MemCompositeDB{},
+			}
+			got := a.createUser(tc.context, tc.event)
+			expected := 1 // work out expected
+			if got != expected {
+				t.Errorf("expected %v, got %v", expected, got)
+			}
+		})
+	}
+}
